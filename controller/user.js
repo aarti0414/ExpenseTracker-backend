@@ -14,7 +14,7 @@ exports.signup = (req,res)=>{
             User.create({name,email,phoneno,password:hash}).then(()=>{
                return  res.status(201).json({message:'Successfully new user  Created'})
             }).catch(err=>{
-               return res.status(403).json(err);
+               return res.status(403).json({error:'User Already exist'});
             })
         })
     })
