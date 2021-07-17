@@ -8,6 +8,10 @@ const User = require('./models/users');
 const userRoutes = require('./routes/user')
 
 const app = express();
+const dotenv = require('dotenv');
+
+//get config vars
+dotenv.config();
 
 app.use(cors());
 

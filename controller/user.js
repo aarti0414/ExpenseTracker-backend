@@ -19,4 +19,38 @@ exports.signup = (req,res)=>{
         })
     })
 }
+function generateAccessToken(id) {
+    return jwt.sign(id ,process.env.TOKEN_SECRET);
+}
 
+exports.login =(req,res)=>{
+    const {email,password} = req.body;
+    console.log(req.body);
+    console.log("login successfull"+password);
+
+    User.findAll({where:{email}}).then(user=>{
+        if(user.length > 0){
+            bcrypt.compare(password,user[0].password,function(err,response){        //password --> frontend     bcrypt(password) --hash(pw)
+                                                                                    //user[0].password --> db   hash(pw)
+                if(err){
+                    console.log(err)
+                    return res.json({success: false ,message:'something went wrong'})
+                }
+                if (response){
+                    console.log(JSON.stringify(user));
+                    const jwttoken = generateAccessToken(user[0].id);
+                    res.json({token: jwttoken, success: true, message: 'Successfully Logged In'})
+                // Send JWT
+                }
+                else {
+                    // response is OutgoingMessage object that server response http request
+                    return res.status(401).json({success: false, message: 'passwords do not match'});
+                    }
+            });
+        }
+        else {
+            return res.status(404).json({success: false, message: 'passwords do not match'})
+        }
+    })
+    
+}
