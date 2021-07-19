@@ -12,6 +12,7 @@ exports.addexpense = (req, res) => {
 exports.getexpenses = (req, res)=> {
 
     req.user.getExpenses().then(expenses => {
+        console.log(expenses);
         return res.status(200).json({expenses, success: true})
     })
     .catch(err => {
