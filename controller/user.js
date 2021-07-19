@@ -5,6 +5,7 @@ const User = require('../models/users');
 exports.signup = (req,res)=>{
     const {name,email,phoneno,password} = req.body;
     const saltRounds=10;
+
     bcrypt.genSalt(saltRounds,function(err,salt){
         bcrypt.hash(password,salt,function(err,hash){
             if(err){
@@ -12,13 +13,14 @@ exports.signup = (req,res)=>{
                 return  res.json({message: 'Unable to create new user'})
             } 
             User.create({name,email,phoneno,password:hash}).then(()=>{
-               return  res.status(201).json({message:'Successfully new user  Created'})
+               return  res.status(201).json({message:'Successfully new user Created'})
             }).catch(err=>{
                return res.status(403).json({error:'User Already exist'});
             })
         })
     })
 }
+
 function generateAccessToken(id) {
     return jwt.sign(id ,process.env.TOKEN_SECRET);
 }
@@ -37,7 +39,7 @@ exports.login =(req,res)=>{
                     return res.json({success: false ,message:'something went wrong'})
                 }
                 if (response){
-                    console.log(JSON.stringify(user));
+                    console.log(JSON.stringify(user));                      //user is in array 
                     const jwttoken = generateAccessToken(user[0].id);
                     res.json({token: jwttoken, success: true, message: 'Successfully Logged In'})
                 // Send JWT
